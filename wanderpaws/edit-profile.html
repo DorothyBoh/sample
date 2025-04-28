@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WanderPaws - Edit Profile</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo">
+        <div class="paw-icon">🐾</div>
+        <div>WanderPaws</div>
+      </div>
+    </div>
+    
+    <!-- Navigation Bar -->
+    <div class="navbar">
+      <a href="index.html" class="nav-item">
+        <div class="nav-icon">🏠</div>
+        <div>Home</div>
+      </a>
+      <a href="notification.html" class="nav-item">
+        <div class="nav-icon">🔔</div>
+        <div>Notification</div>
+      </a>
+      <a href="settings.html" class="nav-item">
+        <div class="nav-icon">⚙️</div>
+        <div>Settings</div>
+      </a>
+      <a href="profile.html" class="nav-item active">
+        <div class="nav-icon">👤</div>
+        <div>Profile</div>
+      </a>
+    </div>
+    
+    <!-- Edit Profile Screen -->
+    <div class="content">
+      <form class="pet-form" action="profile.html" method="get">
+        <div class="pet-photo-section">
+          <img src="placeholder.jpg" alt="Pet Profile" class="pet-image-large">
+          <button type="button" class="photo-btn">Change Photo</button>
+        </div>
+        
+        <div class="form-group">
+          <label for="petName">Pet Name</label>
+          <input type="text" id="petName" class="form-control" value="Kali">
+        </div>
+        
+        <div class="form-group">
+          <label for="petBreed">Breed</label>
+          <input type="text" id="petBreed" class="form-control" value="Poodle">
+        </div>
+        
+        <div class="form-group">
+          <label for="petAge">Age</label>
+          <input type="text" id="petAge" class="form-control" value="3 yrs. old">
+        </div>
+        
+        <div class="form-group">
+          <label for="petBirthdate">Birthdate</label>
+          <input type="date" id="petBirthdate" class="form-control" value="2021-05-16">
+        </div>
+        
+        <div class="form-group">
+          <label for="petGender">Gender</label>
+          <input type="text" id="petGender" class="form-control" value="Female">
+        </div>
+        
+        <div class="form-group">
+          <label for="petMicrochip">Optional: Microchip ID</label>
+          <input type="text" id="petMicrochip" class="form-control" placeholder="Enter microchip ID">
+        </div>
+        
+        <button type="submit" class="btn btn-primary btn-block">Save</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
