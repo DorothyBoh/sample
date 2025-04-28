@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WanderPaws - Pet Vaccination Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        :root {
+            --primary-color: #8257e5;
+            --primary-dark: #6a45c0;
+            --secondary-color: #e6d8f7;
+            --accent-color: #ff6b6b;
+            --text-color: #333;
+            --light-text: #777;
+            --white: #fff;
+            --error: #ff3b30;
+            --success: #34c759;
+            --warning: #ff9500;
+            --info: #5ac8fa;
+            --background: #f5f0ff;
+            --card-bg: #ffffff;
+            --border-radius: 16px;
+            --button-radius: 12px;
+            --shadow: 0 4px 16px rgba(130, 87, 229, 0.12);
+            --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .page {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: var(--shadow);
+            border-bottom-left-radius: 24px;
+            border-bottom-right-radius: 24px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 28px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+        }
+
+        .logo i {
+            font-size: 24px;
+        }
+
+        .nav-icons {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-top: 15px;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 30px;
+            padding: 8px 0;
+        }
+
+        .nav-icons i {
+            font-size: 20px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 50%;
+        }
+
+        .nav-icons i.active {
+            background-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .content {
+            flex: 1;
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--background);
+            position: relative;
+            z-index: 5;
+        }
+
+        /* Form Styles */
+        .form-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            box-shadow: var(--card-shadow);
+        }
+
+        input, select {
+            padding: 14px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: var(--button-radius);
+            font-size: 16px;
+            width: 100%;
+            transition: all 0.3s ease;
+            background-color: #f9f9f9;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(130, 87, 229, 0.2);
+            background-color: white;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary-color);
+        }
+
+        /* Button Styles */
+        .primary-btn {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 14px 20px;
+            border: none;
+            border-radius: var(--button-radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .primary-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .secondary-btn {
+            background-color: var(--white);
+            color: var(--primary-color);
+            padding: 14px 20px;
+            border: 1px solid var(--primary-color);
+            border-radius: var(--button-radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .secondary-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .add-btn {
+            margin-top: 20px;
+        }
+
+        /* Pet Profile */
+        .pet-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 24px;
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            top: -40px;
+            margin-bottom: -20px;
+        }
+
+        .pet-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 10px 0;
+            box-shadow: var(--shadow);
+            border: 3px solid var(--white);
+        }
+
+        .pet-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .pet-image-upload {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 10px auto;
+            box-shadow: var(--shadow);
+            border: 3px solid var(--white);
+        }
+
+        .pet-image-upload .upload-btn {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background-color: var(--primary-color);
+            color: var(--white);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+        }
+
+        .empty-image {
+            width: 100%;
+            height: 100%;
+            background-color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .empty-image i {
+            font-size: 40px;
+            color: var(--primary-color);
+        }
+
+        /* Vaccination Cards */
+        .card {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .card h3 {
+            color: var(--primary-color);
+            margin-bottom: 16px;
+            font-size: 18px;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 8px;
+        }
+
+        .vaccine-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .vaccine-info {
+            flex: 1;
+        }
+
+        .vaccine-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .vaccine-date, .vet-name {
+            color: var(--light-text);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .status-icon {
+            color: var(--success);
+            font-size: 22px;
+        }
+
+        .overdue-icon {
+            color: var(--warning);
+            font-size: 22px;
+        }
+
+        /* Reminder Tags */
+        .reminder-tag {
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--white);
+        }
+
+        .reminder-tag.now {
+            background-color: var(--error);
+        }
+
+        .reminder-tag.soon {
+            background-color: var(--warning);
+        }
+
+        .reminder-tag.later {
+            background-color: var(--info);
+        }
+
+        .reminder-tag.upcoming {
+            background-color: var(--success);
+        }
+
+        .reminder-status.done {
+            color: var(--success);
+            font-size: 26px;
+        }
+
+        /* Startup Page */
+        #startup-page .content {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary-color), #a35ee5);
+            color: white;
+        }
+
+        #startup-page .header {
+            background: transparent;
+            box-shadow: none;
+        }
+
+        #startup-page h2 {
+            margin-bottom: 50px;
+            font-size: 32px;
+            line-height: 1.3;
+        }
+
+        #startup-page .primary-btn {
+            background-color: white;
+            color: var(--primary-color);
+            font-size: 18px;
+            padding: 16px 40px;
+        }
+
+        /* Login & Signup pages */
+        #login-page .content,
+        #signup-page .content {
+            padding-top: 0;
+            background: linear-gradient(135deg, var(--primary-color), #a35ee5);
+        }
+
+        #login-page .header,
+        #signup-page .header {
+            background: transparent;
+            box-shadow: none;
+        }
+
+        #login-page h2,
+        #signup-page h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        /* Social Login */
+        .social-login {
+            margin-top: 20px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .social-login hr {
+            flex: 1;
+            border: none;
+            height: 1px;
+            background-color: #e0e0e0;
+        }
+
+        .social-login span {
+            padding: 0 15px;
+            color: var(--light-text);
+            background-color: white;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .social-icons i {
+            font-size: 20px;
+            padding: 12px;
+            border-radius: 50%;
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .social-icons i:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* Form Footer */
+        .form-footer {
+            margin-top: 16px;
+            text-align: center;
+        }
+
+        .form-footer p {
+            margin: 8px 0;
+            color: var(--light-text);
+        }
+
+        .form-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Vaccine History */
+        .vaccine-history {
+            margin-top: -20px;
+        }
+
+        .vaccine-record {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .vaccine-record:last-child {
+            border-bottom: none;
+        }
+
+        /* Action Buttons */
+        .action-btn {
+            background-color: var(--white);
+            color: var(--text-color);
+            padding: 16px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .action-btn i {
+            font-size: 20px;
+            color: var(--primary-color);
+            width: 24px;
+            text-align: center;
+        }
+
+        .action-btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        /* Print Document */
+        .vaccine-table {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .vaccine-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .header-row {
+            font-weight: bold;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none;
+        }
+
+        .greeting {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .pet-details {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--light-text);
+            margin-bottom: 8px;
+        }
+
+        .pet-details i {
+            color: var(--primary-color);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 24px 0 16px;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Container for all pages -->
+    <div class="app-container">
+        <!-- Start Page -->
+        <div class="page" id="startup-page">
+            <div class="header">
+                <h1 class="logo"><i class="fas fa-paw"></i> WanderPaws</h1>
+            </div>
+            <div class="content">
+                <h2>Seamless Travel,<br>Happy Tails.</h2>
+                <p style="margin-bottom: 40px; opacity: 0.9;">Keep track of your pet's vaccinations and health records all in one place</p>
+                <button class="primary-btn" onclick="showPage('login-page')">Get Started <i class="fas fa-arrow-right"></i></button>
+            </div>
+        </div>
+
+        <!-- Login Page -->
+        <div class="page hidden" id="login-page">
+            <div class="header">
+                <h1 class="logo"><i class="fas fa-paw"></i> WanderPaws</h1>
+            </div>
+            <div class="content">
+                <h2>Welcome Back!</h2>
+                <form class="form-container">
+                    <input type="text" placeholder="Email" required>
+                    <input type="password" placeholder="Password" required>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="remember-me">
+                        <label for="remember-me">Remember me</label>
+                    </div>
+                    <button type="button" class="primary-btn" onclick="showPage('homepage')">LOGIN</button>
+                    <div class="form-footer">
+                        <p>Forgot Password?</p>
+                        <p>Don't have an account? <a href="#" onclick="showPage('signup-page')">Sign Up</a></p>
+                    </div>
+                    <div class="social-login">
+                        <hr><span>OR</span><hr>
+                    </div>
+                    <div class="social-icons">
+                        <i class="fab fa-google"></i>
+                        <i class="fab fa-facebook"></i>
+                        <i class="fab fa-apple"></i>
+                        <i class="fab fa-tiktok"></i>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Homepage -->
+        <div class="page hidden" id="homepage">
+            <div class="header">
+                <h1 class="logo"><i class="fas fa-paw"></i> WanderPaws</h1>
+                <div class="nav-icons">
+                    <i class="fas fa-home active"></i>
+                    <i class="fas fa-calendar-alt" onclick="showPage('notification-page')"></i>
+                    <i class="fas fa-user" onclick="showPage('profile-page')"></i>
+                    <i class="fas fa-cog" onclick="showPage('settings-page')"></i>
+                </div>
+            </div>
+            <div class="content">
+                <div class="pet-info">
+                    <div class="greeting">Hello, Kali!</div>
+                    <div class="pet-image">
+                        <img src="Capture.png" alt="Pet profile image">
+                    </div>
+                    <div class="feature-image-container">
+                        <img src="" alt="Featured pet image" class="feature-image">
+                        <div class="feature-caption">
+                          <h3>Heads Up, Dorothy!</h3>
+                        </div>
+                      </div>
+                </div>
+                
+                <div class="section-title">Recent Vaccination</div>
+                <div class="card">
+                    <div class="vaccine-item">
+                        <div class="vaccine-info">
+                            <p class="vaccine-name">Rabies Vaccine</p>
+                            <p class="vaccine-date">March 15, 2025</p>
+                            <p class="vet-name">Dr. Smith Veterinary Clinic</p>
+                        </div>
+                        <i class="fas fa-check-circle status-icon"></i>
+                    </div>
+                </div>
+                
+                <div class="section-title">Upcoming Vaccines</div>
+                <div class="card">
+                    <div class="vaccine-item">
+                        <div class="vaccine-info">
+                            <p class="vaccine-name">DHPP Booster</p>
+                            <p class="vaccine-date">May 10, 2025</p>
+                            <p class="vet-name">PetCare Clinic</p>
+                        </div>
+                        <span class="reminder-tag now">Due Now</span>
+                    </div>
+                    <div class="vaccine-item">
+                        <div class="vaccine-info">
+                            <p class="vaccine-name">Bordetella</p>
+                            <p class="vaccine-date">June 22, 2025</p>
+                            <p class="vet-name">PetCare Clinic</p>
+                        </div>
+                        <span class="reminder-tag soon">Coming Soon</span>
+                    </div>
+                </div>
+                
+                <button class="primary-btn add-btn" onclick="showPage('add-record-page')">
+                    <i class="fas fa-plus"></i> Add New Record
+                </button>
+            </div>
+        </div>
+
+        <!-- Profile Page -->
+        <div class="page hidden" id="profile-page">
+            <div class="header">
+                <h1 class="logo"><i class="fas fa-paw"></i> WanderPaws</h1>
+                <div class="nav-icons">
+                    <i class="fas fa-home" onclick="showPage('homepage')"></i>
+                    <i class="fas fa-calendar-alt" onclick="showPage('notification-page')"></i>
+                    <i class="fas fa-user active"></i>
+                    <i class="fas fa-cog" onclick="showPage('settings-page')"></i>
+                </div>
+            </div>
+            <div class="content">
+                <div class="pet-info">
+                    <div class="pet-image">
+                        <img src = "Capture.PNG" alt="Pet profile image">
+                    </div>
+                    <h2>Kali</h2>
+                    <div class="pet-details">
+                        <i class="fa-solid fa-paw"></i> Poodle
+                        <i class="fas fa-birthday-cake"></i> 3 years old
+                        <i class="fas fa-calendar-alt"></i> 2020-03-15
+                        <i class="fas fa-venus"></i> Female
+                    </div>
+                </div>
+                
+                <div class="section-title">Manage Profile</div>
+                <div class="action-btn" onclick="showPage('edit-profile-page')">
+                    <i class="fas fa-edit"></i> Edit Profile
+                </div>
+                <div class="action-btn" onclick="showPage('add-new-pet-page')">
+                    <i class="fas fa-plus"></i> Add New Pet Profile
+                </div>
+                <div class="action-btn" onclick="showPetSwitcher()">
+                    <i class="fas fa-exchange-alt"></i> Switch to Other Pet
+                </div>
+                
+                <div class="section-title">Health Records</div>
+                <div class="action-btn" onclick="showPage('vaccine-history-page')">
+                    <i class="fas fa-syringe"></i> View Vaccine History
+                </div>
+                <div class="action-btn" onclick="showPage('add-record-page')">
+                    <i class="fas fa-plus-circle"></i> Add New Record
+                </div>
+                
+                <div class="section-title">Documents</div>
+                <div class="action-btn" onclick="printDocument()">
+                    <i class="fas fa-print"></i> Print Document
+                </div>
+                <div class="action-btn" onclick="viewAttachedDocuments()">
+                    <i class="fas fa-file-alt"></i> View Attached Documents
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification Page -->
+        <div class="page hidden" id="notification-page">
+            <div class="header">
+                <h1 class="logo"><i class="fas fa-paw"></i> WanderPaws</h1>
+                <div class="nav-icons">
+                    <i class="fas fa-home" onclick="showPage('homepage')"></i>
+                    <i class="fas fa-calendar-alt active"></i>
+                    <i class="fas fa-user" onclick="showPage('profile-page')"></i>
+                    <i class="fas fa-cog" onclick="showPage('settings-page')"></i>
+                </div>
+            </div>
+            <div class="content">
+                <div class="pet-info">
+                    <div class="pet-image">
+                        <img src="/api/placeholder/100/100" alt="Pet profile image">
+                    </div>
+                    <h2>Kali</h2>
+                    <div class="pet-details">
+                        <i class="fas fa-venus"></i> Female
+                        <i class="fas fa-birthday-cake"></i> 3 years old
+                    </div>
+                </div>
+                
+                <div class="section-title">Upcoming Vaccinations</div>
+                <div class="card">
+                    <div class="vaccine-item">
+                        <div class="vaccine-info">
+                            <p class="vaccine-name">DHPP Booster</p>
+                            <p class="vaccine-date">May 10, 2025</p>
+                            <p class="vet-name">PetCare Clinic</p>
+                        </div>
+                        <div class="reminder-status">
+                            <span class="reminder-tag now">Due Now</span>
+                        </div>
+                    </div>
+                    <div class="vaccine-item">
+                        <div class="vaccine-info">
+                            <p class="vaccine-name">Bordetella</p>
+                            <p class="vaccine-date">June 22, 2025</p>
+                            <p class="vet-name">PetCare Clinic</p>
+                        </div>
+                        <div class="reminder-status">
+                            <span class="reminder-tag soon">Coming Soon</span>
+                        </div>
+                    </div>
+                    <div class="vaccine-item">
+                        <div class="vaccine-info">
+                            <p class="vaccine-name">Leptospirosis</p>
+                            <p class="vaccine-date">August 15, 2025</p>
+                            <p class="vet-name">Animal Hospital</p>
+                        </div>
+                        <div class="reminder-status">
+                            <span class="reminder-tag later">Later</span>
+                        </div>
+                    </div>
+                    <div class="vaccine-item">
+                        <div class="vaccine-info">
+                            <p class="vaccine-name">Flea & Tick Prevention</p>
+                            <p class="vaccine-date">September 5, 2025</p>
+                            <p class="vet-name">PetCare Clinic</p>
+                        </div>
+                        <div class="reminder-status">
+                            <span class="reminder-tag upcoming">Scheduled</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="secondary-btn" onclick="showPage('vaccine-history-page')">
+                    <i class="fas fa-history"></i> View Complete History
+                </button>
+            </div>
+        </div>
+
+        <!-- Vaccine History Page -->
+        <div class="page hidden" id="vaccine-history-page">
+            <div class="header">
+                <h1 class="logo"><i class="fas fa-paw"></i> WanderPaws</h1>
+                <div class="nav-icons">
+                    <i class="fas fa-home" onclick="showPage('homepage')"></i>
+                    <i class="fas fa-calendar-alt" onclick="showPage('notification-page')"></i>
+                    <i class="fas fa-user active"></i>
+                    <i class="fas fa-cog" onclick="showPage('settings-page')"></i>
+                </div>
+            </div>
+            <div class="content">
+                <div class="pet-info">
+                    <div class="pet-image">
+                        <img src="/api/placeholder/100/100" alt="Pet profile image">
+                    </div>
+                    <h2>Kali</h2>
+                    <div class="pet-details">
+                        <i class="fas fa-venus"></i> Female
+                        <i class="fas fa-birthday-cake"></i> 3 years old
+                    </div>
+                </div>
+                
+                <div class="section-title">Vaccination History</div>
+                <div class="card vaccine-history">
+                    <div class="vaccine-record">
+                        <p class="vaccine-name">Rabies Vaccine</p>
+                        <p class="vaccine-date">March 15, 2025</p>
+                        <p class="vet-name">Dr. Smith Veterinary Clinic</p>
+                    </div>
+                    <div class="vaccine-record">
+                        <p class="vaccine-name">DHPP Initial</p>
+                        <p class="vaccine-date">November 10, 2024</p>
+                        <p class="vet-name">PetCare Clinic</p>
+                    </div>
+                    <div class="vaccine-record">
+                        <p class="vaccine-name">Lyme Disease</p>
+                        <p class="vaccine-date">October 3, 2024</p>
+                        <p class="vet-name">Animal Hospital</p>
+                    </div>
+                    <div class="vaccine-record">
+                        <p class="vaccine-name">Bordetella Initial</p>
+                        <p class="vaccine-date">June 22, 2024</p>
+                        <p class="vet-name">Dr. Smith Veterinary Clinic</p>
+                    </div>
+                    <div class="vaccine-record">
+                        <p class="vaccine-name">Canine Influenza</p>
+                        <p class="vaccine-date">March 17, 2024</p>
+                        <p class="vet-name">PetCare Clinic</p>
+                    </div>
+                </div>
+                
+                <button class="primary-btn add-btn" onclick="showPage('add-record-page')">
+                    <i class="fas fa-plus"></i> Add New Record
+                </button>
+            </div>
+        </div>
+
+        <!-- Add Record Page -->
+        <div class="page hidden" id="add-record-page">
+            <div class="header">
+                <h1 class="logo"><i class="fas fa-paw"></i> WanderPaws</h1>
+                <div class="nav-icons">
+<!-- Continuing from where the index.html code was cut off -->
+
+<i class="fas fa-home" onclick="showPage('homepage')"></i>
+<i class="fas fa-calendar-alt" onclick="showPage('notification-page')"></i>
+<i class="fas fa-user" onclick="showPage('profile-page')"></i>
+<i class="fas fa-cog" onclick="showPage('settings-page')"></i>
+</div>
+</div>
+<div class="content">
+<h2 class="section-title">Add New Vaccination Record</h2>
+<div class="form-container">
+<div class="pet-image">
+    <img src="/api/placeholder/100/100" alt="Pet profile image">
+</div>
+<h3>Kali</h3>
+
+<label for="vaccine-name">Vaccine Name</label>
+<input type="text" id="vaccine-name" placeholder="Enter vaccine name" required>
+
+<label for="vaccine-date">Date</label>
+<input type="date" id="vaccine-date" required>
+
+<label for="vet-name">Vet Name</label>
+<input type="text" id="vet-name" placeholder="Enter veterinarian name">
+
+<label for="vet-clinic">Vet Clinic</label>
+<input type="text" id="vet-clinic" placeholder="Enter clinic name">
+
+<div class="checkbox-container">
+    <input type="checkbox" id="add-reminder">
+    <label for="add-reminder">Set reminder for next dose</label>
+</div>
+
+<label for="notes">Notes</label>
+<input type="text" id="notes" placeholder="Add any additional notes">
+
+<label for="attach-document">Attach Document</label>
+<input type="file" id="attach-document" accept=".pdf,.jpg,.png,.doc,.docx">
+
+<button class="primary-btn" onclick="saveVaccineRecord()">
+    <i class="fas fa-save"></i> Save Record
+</button>
+<button class="secondary-btn" onclick="showPage('homepage')">
+    <i class="fas fa-times"></i> Cancel
+</button>
+</div>
+</div>
+</div>
+
+<!-- Settings Page -->
+<div class="page hidden" id="settings-page">
+<div class="header">
+<h1 class="logo"><i class="fas fa-paw"></i> WanderPaws</h1>
+<div class="nav-icons">
+<i class="fas fa-home" onclick="showPage('homepage')"></i>
+<i class="fas fa-calendar-alt" onclick="showPage('notification-page')"></i>
+<i class="fas fa-user" onclick="showPage('profile-page')"></i>
+<i class="fas fa-cog active"></i>
+</div>
+</div>
+<div class="content">
+<h2 class="section-title">Account Settings</h2>
+<div class="form-container">
+<label for="user-name">Full Name</label>
+<input type="text" id="user-name" value="Dorothy Miller">
+
+<label for="user-email">Email</label>
+<input type="email" id="user-email" value="dorothy.miller@example.com">
+
+<label for="user-phone">Phone Number</label>
+<input type="tel" id="user-phone" placeholder="Enter phone number">
+
+<button class="primary-btn">
+    <i class="fas fa-save"></i> Save Changes
+</button>
+</div>
+
+<h2 class="section-title">Notification Preferences</h2>
+<div class="form-container">
+<div class="checkbox-container">
+    <input type="checkbox" id="email-notifications" checked>
+    <label for="email-notifications">Email Notifications</label>
+</div>
+
+<div class="checkbox-container">
+    <input type="checkbox" id="push-notifications" checked>
+    <label for="push-notifications">Push Notifications</label>
+</div>
+
+<div class="checkbox-container">
+    <input type="checkbox" id="reminder-frequency">
+    <label for="reminder-frequency">Weekly Summary</label>
+</div>
+
+<label for="reminder-days">Reminder Days Before Due</label>
+<select id="reminder-days">
+    <option value="7">7 Days Before</option>
+    <option value="14" selected>14 Days Before</option>
+    <option value="30">30 Days Before</option>
+</select>
+
+<button class="primary-btn">
+    <i class="fas fa-save"></i> Save Preferences
+</button>
+</div>
+
+<div class="action-btn" style="margin-top: 24px;" onclick="showPage('login-page')">
+<i class="fas fa-sign-out-alt"></i> Log Out
+</div>
+</div>
+</div>
+
+<!-- Edit Profile Page -->
+<div class="page hidden" id="edit-profile-page">
+<div class="header">
+<h1 class="logo"><i class="fas fa-paw"></i> WanderPaws</h1>
+<div class="nav-icons">
+<i class="fas fa-home" onclick="showPage('homepage')"></i>
+<i class="fas fa-calendar-alt" onclick="showPage('notification-page')"></i>
+<i class="fas fa-user active"></i>
+<i class="fas fa-cog" onclick="showPage('settings-page')"></i>
+</div>
+</div>
+<div class="content">
+<h2 class="section-title">Edit Pet Profile</h2>
+<div class="form-container">
+<div class="pet-image-upload">
+    <img src="/api/placeholder/100/100" alt="Pet profile image">
+    <label for="pet-image-upload" class="upload-btn">
+        <i class="fas fa-camera"></i>
+        <input type="file" id="pet-image-upload" accept="image/*" style="display: none;">
+    </label>
+</div>
+
+<label for="pet-name">Pet Name</label>
+<input type="text" id="pet-name" value="Kali">
+
+<label for="pet-breed">Breed</label>
+<input type="text" id="pet-breed" value="Golden Retriever">
+
+<label for="pet-age">Age</label>
+<input type="text" id="pet-age" value="3 years old">
+
+<label for="pet-birthday">Birthday</label>
+<input type="date" id="pet-birthday" value="2022-03-15">
+
+<label for="pet-gender">Gender</label>
+<select id="pet-gender">
+    <option value="male">Male</option>
+    <option value="female" selected>Female</option>
+</select>
+
+<label for="microchip">Microchip Number</label>
+<input type="text" id="microchip" value="985141000123456">
+
+<button class="primary-btn" onclick="saveProfile(); showPage('profile-page')">
+    <i class="fas fa-save"></i> Save Changes
+</button>
+<button class="secondary-btn" onclick="showPage('profile-page')">
+    <i class="fas fa-times"></i> Cancel
+</button>
+</div>
+</div>
+</div>
+
+<!-- Add New Pet Page -->
+<div class="page hidden" id="add-new-pet-page">
+<div class="header">
+<h1 class="logo"><i class="fas fa-paw"></i> WanderPaws</h1>
+<div class="nav-icons">
+<i class="fas fa-home" onclick="showPage('homepage')"></i>
+<i class="fas fa-calendar-alt" onclick="showPage('notification-page')"></i>
+<i class="fas fa-user active"></i>
+<i class="fas fa-cog" onclick="showPage('settings-page')"></i>
+</div>
+</div>
+<div class="content">
+<h2 class="section-title">Add New Pet</h2>
+<div class="form-container">
+<div class="pet-image-upload">
+    <div class="empty-image">
+        <i class="fas fa-paw"></i>
+    </div>
+    <label for="new-pet-image-upload" class="upload-btn">
+        <i class="fas fa-camera"></i>
+        <input type="file" id="new-pet-image-upload" accept="image/*" style="display: none;">
+    </label>
+</div>
+
+<label for="new-pet-name">Pet Name</label>
+<input type="text" id="new-pet-name" placeholder="Enter pet name">
+
+<label for="new-pet-breed">Breed</label>
+<input type="text" id="new-pet-breed" placeholder="Enter breed">
+
+<label for="new-pet-age">Age</label>
+<input type="text" id="new-pet-age" placeholder="Enter age">
+
+<label for="new-pet-birthday">Birthday</label>
+<input type="date" id="new-pet-birthday">
+
+<label for="new-pet-gender">Gender</label>
+<select id="new-pet-gender">
+    <option value="male">Male</option>
+    <option value="female">Female</option>
+</select>
+
+<label for="new-microchip">Microchip Number (optional)</label>
+<input type="text" id="new-microchip" placeholder="Enter microchip number if available">
+
+<button class="primary-btn" onclick="addNewPet(); showPage('homepage')">
+    <i class="fas fa-plus"></i> Add Pet
+</button>
+<button class="secondary-btn" onclick="showPage('profile-page')">
+    <i class="fas fa-times"></i> Cancel
+</button>
+</div>
+</div>
+</div>
+
+<!-- Sign Up Page -->
+<div class="page hidden" id="signup-page">
+<div class="header">
+<h1 class="logo"><i class="fas fa-paw"></i> WanderPaws</h1>
+</div>
+<div class="content">
+<h2>Create Account</h2>
+<form class="form-container">
+<input type="text" placeholder="Full Name" required>
+<input type="email" placeholder="Email" required>
+<input type="password" placeholder="Password" required>
+<input type="password" placeholder="Confirm Password" required>
+<div class="checkbox-container">
+    <input type="checkbox" id="agree-terms" required>
+    <label for="agree-terms">I agree to Terms & Privacy Policy</label>
+</div>
+<button type="button" class="primary-btn" onclick="showPage('add-new-pet-page')">SIGN UP</button>
+<div class="form-footer">
+    <p>Already have an account? <a href="#" onclick="showPage('login-page')">Log In</a></p>
+</div>
+<div class="social-login">
+    <hr><span>OR</span><hr>
+</div>
+<div class="social-icons">
+    <i class="fab fa-google"></i>
+    <i class="fab fa-facebook"></i>
+    <i class="fab fa-apple"></i>
+    <i class="fab fa-tiktok"></i>
+</div>
+</form>
+</div>
+</div>
+
+<!-- Print Document Page -->
+<div class="page hidden" id="print-document-page">
+<div class="header">
+<h1 class="logo"><i class="fas fa-paw"></i> WanderPaws</h1>
+<div class="nav-icons">
+<i class="fas fa-home" onclick="showPage('homepage')"></i>
+<i class="fas fa-calendar-alt" onclick="showPage('notification-page')"></i>
+<i class="fas fa-user" onclick="showPage('profile-page')"></i>
+<i class="fas fa-cog" onclick="showPage('settings-page')"></i>
+</div>
+</div>
+<div class="content">
+<h2 class="section-title">Pet Vaccination Records</h2>
+<div class="card">
+<div class="pet-details" style="justify-content: center; margin: 20px 0;">
+    <div class="pet-image" style="margin-right: 20px;">
+        <img src="/api/placeholder/100/100" alt="Pet profile image">
+    </div>
+    <div>
+        <h2>Kali</h2>
+        <p><strong>Breed:</strong> Golden Retriever</p>
+        <p><strong>Age:</strong> 3 years old</p>
+        <p><strong>Gender:</strong> Female</p>
+        <p><strong>Microchip:</strong> 985141000123456</p>
+    </div>
+</div>
+
+<h3>Vaccination Record</h3>
+<div class="vaccine-table">
+    <div class="vaccine-row header-row">
+        <div style="width: 40%;">Vaccine Name</div>
+        <div style="width: 25%;">Date</div>
+        <div style="width: 35%;">Veterinarian</div>
+    </div>
+    <div class="vaccine-row">
+        <div style="width: 40%;">Rabies Vaccine</div>
+        <div style="width: 25%;">March 15, 2025</div>
+        <div style="width: 35%;">Dr. Smith Veterinary Clinic</div>
+    </div>
+    <div class="vaccine-row">
+        <div style="width: 40%;">DHPP Initial</div>
+        <div style="width: 25%;">November 10, 2024</div>
+        <div style="width: 35%;">PetCare Clinic</div>
+    </div>
+    <div class="vaccine-row">
+        <div style="width: 40%;">Lyme Disease</div>
+        <div style="width: 25%;">October 3, 2024</div>
+        <div style="width: 35%;">Animal Hospital</div>
+    </div>
+    <div class="vaccine-row">
+        <div style="width: 40%;">Bordetella Initial</div>
+        <div style="width: 25%;">June 22, 2024</div>
+        <div style="width: 35%;">Dr. Smith Veterinary Clinic</div>
+    </div>
+    <div class="vaccine-row">
+        <div style="width: 40%;">Canine Influenza</div>
+        <div style="width: 25%;">March 17, 2024</div>
+        <div style="width: 35%;">PetCare Clinic</div>
+    </div>
+</div>
+
+<h3>Upcoming Vaccinations</h3>
+<div class="vaccine-table">
+    <div class="vaccine-row header-row">
+        <div style="width: 40%;">Vaccine Name</div>
+        <div style="width: 25%;">Due Date</div>
+        <div style="width: 35%;">Veterinarian</div>
+    </div>
+    <div class="vaccine-row">
+        <div style="width: 40%;">DHPP Booster</div>
+        <div style="width: 25%;">May 10, 2025</div>
+        <div style="width: 35%;">PetCare Clinic</div>
+    </div>
+    <div class="vaccine-row">
+        <div style="width: 40%;">Bordetella</div>
+        <div style="width: 25%;">June 22, 2025</div>
+        <div style="width: 35%;">PetCare Clinic</div>
+    </div>
+    <div class="vaccine-row">
+        <div style="width: 40%;">Leptospirosis</div>
+        <div style="width: 25%;">August 15, 2025</div>
+        <div style="width: 35%;">Animal Hospital</div>
+    </div>
+</div>
+
+<div style="margin-top: 30px; text-align: center;">
+    <p><strong>Owner:</strong> Dorothy Miller</p>
+    <p><strong>Contact:</strong> dorothy.miller@example.com</p>
+    <p style="margin-top: 20px; font-size: 12px; color: #777;">
+        This document was generated by WanderPaws on April 28, 2025.
+    </p>
+</div>
+</div>
+
+<div style="display: flex; gap: 12px; margin-top: 20px;">
+<button class="primary-btn" style="flex: 1;" onclick="printContent()">
+    <i class="fas fa-print"></i> Print
+</button>
+<button class="secondary-btn" style="flex: 1;" onclick="showPage('profile-page')">
+    <i class="fas fa-arrow-left"></i> Back
+</button>
+</div>
+</div>
+</div>
+
+<!-- Record Success Page -->
+<div class="page hidden" id="record-success-page">
+<div class="header">
+<h1 class="logo"><i class="fas fa-paw"></i> WanderPaws</h1>
+<div class="nav-icons">
+<i class="fas fa-home" onclick="showPage('homepage')"></i>
+<i class="fas fa-calendar-alt" onclick="showPage('notification-page')"></i>
+<i class="fas fa-user" onclick="showPage('profile-page')"></i>
+<i class="fas fa-cog" onclick="showPage('settings-page')"></i>
+</div>
+</div>
+<div class="content" style="justify-content: center; align-items: center; text-align: center;">
+<div style="color: var(--success); font-size: 80px; margin-bottom: 30px;">
+<i class="fas fa-check-circle"></i>
+</div>
+<h2 style="margin-bottom: 20px;">Record Added Successfully!</h2>
+<p style="margin-bottom: 40px; color: var(--light-text);">Your pet's vaccination record has been added to their profile.</p>
+<button class="primary-btn" onclick="showPage('homepage')">
+<i class="fas fa-home"></i> Go to Homepage
+</button>
+<button class="secondary-btn" style="margin-top: 16px;" onclick="showPage('add-record-page')">
+<i class="fas fa-plus"></i> Add Another Record
+</button>
+</div>
+</div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
